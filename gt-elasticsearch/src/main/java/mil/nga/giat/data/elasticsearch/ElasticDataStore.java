@@ -4,19 +4,9 @@
  */
 package mil.nga.giat.data.elasticsearch;
 
-import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
-
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
+import mil.nga.giat.data.elasticsearch.ElasticAttribute.ElasticGeometryType;
 import org.elasticsearch.action.admin.cluster.state.ClusterStateRequest;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
@@ -47,10 +37,12 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.Name;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
-import mil.nga.giat.data.elasticsearch.ElasticAttribute.ElasticGeometryType;
+import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 
 /**
  * A data store for an Elasticsearch index containing geo_point or geo_shape
@@ -341,7 +333,12 @@ public class ElasticDataStore extends ContentDataStore {
         return docType;
     }    
 
-    private void walk(List<ElasticAttribute> elasticAttributes, Map<String,Object> map, 
+    @Override
+    public void createSchema(SimpleFeatureType featureType) throws IOException {
+
+    }
+
+    private void walk(List<ElasticAttribute> elasticAttributes, Map<String,Object> map,
             String propertyKey, boolean startType, boolean nested) {
         for (final Map.Entry<String, Object> entry : map.entrySet()) {
             final String key = entry.getKey();
